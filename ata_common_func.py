@@ -16,5 +16,3 @@ def report_test_result_FAh(dev, valid, error):
 
 
 report_test_result_FAh('/dev/sdb', 1, 0)
-report_test_result_FAh('/dev/sdb', 1, 0xf)
-1111
