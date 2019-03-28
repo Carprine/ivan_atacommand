@@ -5,16 +5,10 @@
 #----------------------------------------------------------------------------
 
 import scsi_ata_xlat as m
-import atacmds as ata 
+import atacmds as cmd
 
-@ata.ATA_MARVELL_SV_FAh(0xf)
+@cmd.ATA_MARVELL_SV_FAh(0xf)
 def report_test_result_FAh(dev, valid, error):
     res_field = (valid & 0x1) + ((error & 0xf)<<1)
     kw = {'LBA_LOW': res_field}
     return dev, kw
-    
-
-
-report_test_result_FAh('/dev/sdb', 1, 0)
-report_test_result_FAh('/dev/sdb', 1, 0xf)
-report_test_result_FAh('/dev/sdb', 1, localmaster)
