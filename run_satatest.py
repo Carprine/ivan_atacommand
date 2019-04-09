@@ -22,13 +22,15 @@ def compare(file1_name,file2_name,sata_dev):
     print "len_diff is", len_diff
     if len_diff < 20:
         print "SATA test PASS"
+        
+        # Send Report
         ata.report_test_result_FAh(sata_dev, 0x1, 0x0)
-        #os.system("dd if=pass.txt of="+sata_dev)
+        
         return 0
     else:
         for line in diff:
             sys.stdout.write(line)
-        os.system("dd if=fail.txt of="+sata_dev)
+        ata.report_test_result_FAh(sata_dev, 0x1, 0x1)
         return -1
 
 
@@ -75,16 +77,21 @@ print val
 if val==0:
     os.system("rm output.txt")
     os.system("rm nandstatus.txt")
-    #os.system("dd if=/dev/urandom of=input.txt bs=512 count=96")
-    #os.system("dd if=LogErrors.txt of=input.txt bs=512 count=32")
-    output=os.system("dd if=input.txt of="+sata_dev+" bs=512 count=32")
+
+    #Write
+    #output=os.system("dd if=input.txt of="+sata_dev+" bs=512 count=32")
+    ata.write_dma_CAh('/dev/sdb', 'input.txt', 32, 0)
     
     if nand=='nandon':
         get_nand_status(sata_dev)
         #os.system("dd if=startReading.txt of="+sata_dev)
         time.sleep(3)
     print "reading" 
-    os.system("dd if="+sata_dev+" of=output.txt bs=512 count=32")
+
+    #Read
+    #os.system("dd if="+sata_dev+" of=output.txt bs=512 count=32")
+    ata.read_dma_C8h('/dev/sdb', 'output.txt', 32, 0)
+    
     if nand=='nandon':
         time.sleep(5)
     compare("output.txt","input.txt",sata_dev)
